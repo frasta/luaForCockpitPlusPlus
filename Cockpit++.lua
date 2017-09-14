@@ -21,11 +21,15 @@
 
 
 
+
+
 ----------------------------------------------------------------------------------
 --Pilot, please edit only these three lines
 ----------------------------------------------------------------------------------
- -- PUT YOUR ANDROID IP(S) HERE, you will find it in the app:
-local clientIP={"192.168.0.10", "192.168.0.14"} --Several Android devices, for only 1 device enter: local clientIP={"192.168.0.10"}
+ -- PUT YOUR ANDROID IP(S) HERE, you will find it in the applucation:
+local clientIP={"192.168.0.10", "192.168.0.14"} 
+--Several Android devices, for only 1 device enter: local clientIP={"192.168.0.10"}
+
 
 --Editable but not mandatory, put them in the app
 local DCS_PORT = 14801
@@ -37,9 +41,27 @@ local ANDROID_PORT = 14800
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ----------------------------------------------------------------------------------
 --Developers, if you know what you are doing, feel free to change things here
 ----------------------------------------------------------------------------------
+local version = 1
 local log_file = nil
 local lengthIPTable = 0
 local ipUsed = 1
@@ -60,12 +82,10 @@ function LuaExportStart()
 	
 	lengthIPTable = table.getn(clientIP)
 
-	log_file = io.open(lfs.writedir().."/Logs/Export.log", "w")
+	log_file = io.open(lfs.writedir().."/Logs/Cockpit++_Logger.log", "w")
 	
 	log_file:write("Opening file")
 	log_file:write("\n")
-	--log_file:write(lengthIPTable)
-	--log_file:write("\n")
 
 	package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua"
   	package.cpath = package.cpath..";"..lfs.currentdir().."/LuaSocket/?.dll"
@@ -94,10 +114,6 @@ function LuaExportBeforeNextFrame()
 		data, ip, port = udp:receivefrom()
 		
 		if data then
-			--log_file:write("---------------------------------------------------\n")
-			--log_file:write("Received: ", data)
-			--log_file:write("\n")
-			--clientIP = ip
 	  
 			local dataArray = string.gmatch(data, '([^,]+)')
 
@@ -107,11 +123,6 @@ function LuaExportBeforeNextFrame()
 				DEVICE = dataArray(3)
 				COMMAND = dataArray(4)
 				VALUE = dataArray(5)
-				
-				--log_file:write(TYPEBUTTON,"\n")
-				--log_file:write(DEVICE,"\n")
-				--log_file:write(COMMAND,"\n")
-				--log_file:write(VALUE,"\n")
 				
 				if TYPEBUTTON == "1" then
 						GetDevice(DEVICE):performClickableAction(COMMAND,VALUE)
@@ -157,9 +168,8 @@ function LuaExportAfterNextFrame()
 		local selfData = LoGetSelfData()
 		if selfData then
 			currentAircraft = selfData["Name"]
-			--log_file:write(acftName)
 			
-			msgOut = HEAD_MSG ..",".. currentAircraft .. ","
+			msgOut = HEAD_MSG..","..version..","..currentAircraft ..","
 
 			if currentAircraft == "M-2000C" then
 				local MainPanel = GetDevice(0)
@@ -168,39 +178,19 @@ function LuaExportAfterNextFrame()
 
 				ppa = MainPanel:get_argument_value(276) ..";".. MainPanel:get_argument_value(265) ..";".. MainPanel:get_argument_value(277) ..";".. MainPanel:get_argument_value(278) ..";".. MainPanel:get_argument_value(275) ..";".. MainPanel:get_argument_value(267) ..";".. MainPanel:get_argument_value(268) ..";".. MainPanel:get_argument_value(270) ..";".. MainPanel:get_argument_value(271) ..";".. MainPanel:get_argument_value(273) ..";".. MainPanel:get_argument_value(274) ..";".. MainPanel:get_argument_value(280) ..";".. MainPanel:get_argument_value(281)
 				
-				msgOut = msgOut..list_indication(6)..","..list_indication(7)..","..pca..","..list_indication(8)..","..ppa.." \n"
-				--list_indication(1) VTB
-				--list_indication(2) RWR
-				--list_indication(3) ECM_CHF
-				--list_indication(4) ecm flr
-				--list_indication(5) fuel
-				--list_indication(6) PCA UR
-				--list_indication(7) PCA BR
-				--list_indication(8) PPA
-				--list_indication(9) frequency
-				--list_indication(10) frequency(PCN ?)
-				--list_indication(11) PCN BR
-				--list_indication(12) nothing....s
-				--list_indication(13) base
-				--list_indication(14) many data
-				--log_file:write(list_indication(2))
+				local insdata = "";
+				for line in string.gmatch(list_indication(10), "[^%s]+") do
+					insdata = insdata.."\n"..line:sub(-25)	
+				end
+				
+				ins = MainPanel:get_argument_value(669) ..";".. MainPanel:get_argument_value(670) ..";".. MainPanel:get_argument_value(671) ..";".. MainPanel:get_argument_value(564) ..";".. MainPanel:get_argument_value(565) ..";".. MainPanel:get_argument_value(566) ..";".. MainPanel:get_argument_value(567) ..";".. MainPanel:get_argument_value(568) ..";".. MainPanel:get_argument_value(569) ..";".. MainPanel:get_argument_value(574) ..";".. MainPanel:get_argument_value(575) ..";".. MainPanel:get_argument_value(571) ..";".. MainPanel:get_argument_value(668) ..";".. MainPanel:get_argument_value(573) ..";".. MainPanel:get_argument_value(577) ..";".. MainPanel:get_argument_value(579)..";".. MainPanel:get_argument_value(581)..";".. MainPanel:get_argument_value(583)..";".. MainPanel:get_argument_value(595)..";".. MainPanel:get_argument_value(597)
+
+				ins_knob = MainPanel:get_argument_value(627)..";".. MainPanel:get_argument_value(629)
+				
+				msgOut = msgOut..list_indication(6)..","..list_indication(7)..","..pca..","..list_indication(8)..","..ppa..","..insdata..","..list_indication(11)..","..ins..","..ins_knob..",".." \n"
+
 			end
 			if currentAircraft == "F-15C" then
-			--LoGetTWSInfo() -- return Threat Warning System status (result  the table )
-			--result_of_LoGetTWSInfo =
-			--{
-			--	Mode = , -- current mode (0 - all ,1 - lock only,2 - launch only
-			--	Emitters = {table of emitters}
-			--}
-			--emitter_table =
-			--{
-			--	ID =, -- world ID
-			--	Type = {level1,level2,level3,level4}, -- world database classification of emitter #the different levels of types - for instance, level1 (the first int), means airborne (1), land(2), ship(3), etc
-			--	Power =, -- power of signal
-			--	Azimuth =,
-			--	Priority =,-- priority of emitter (int)
-			--	SignalType =, -- string with vlues: "scan" ,"lock", "missile_radio_guided","track_while_scan";
-			--}
 				local result_of_LoGetTWSInfo = LoGetTWSInfo()
 				local data =""
 				local allSpots =""
@@ -218,6 +208,16 @@ function LuaExportAfterNextFrame()
 					data = result_of_LoGetTWSInfo.Mode .. ",".. allSpots		
 				end
 				msgOut = msgOut..data
+			end
+			
+			
+			
+			if currentAircraft == "UH-1H" then
+				local MainPanel = GetDevice(0)
+
+				armament_panel = MainPanel:get_argument_value(252) ..";".. MainPanel:get_argument_value(253) ..";".. MainPanel:get_argument_value(256) ..";".. MainPanel:get_argument_value(257) ..";".. MainPanel:get_argument_value(258) ..";".. MainPanel:get_argument_value(259) ..";".. MainPanel:get_argument_value(260)
+
+				msgOut = msgOut..armament_panel..",".." \n"
 			end
 			
 			--log_file:write("\n")
@@ -247,13 +247,11 @@ function LuaExportStop()
    	log_file = nil
    end
 end
+
+
+
+
 ----------------------------------------------------------------------------------
-
-
-
-
-
-
 --
 --
 --     _         Spitfire
@@ -269,9 +267,3 @@ end
 --
 --
 -- source: http://xcski.com/~ptomblin/planes.txt
-
-
-
-
-
-
