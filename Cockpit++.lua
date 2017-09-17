@@ -73,7 +73,6 @@ local msgOut =""
 
 local prevLuaExportStart = LuaExportStart
 
-
 function LuaExportStart()
 
 	if prevLuaExportStart then
@@ -104,7 +103,13 @@ local DEVICE = 0
 local COMMAND = 0
 local VALUE = 0
 
+local prevLuaExportBeforeNextFrame = LuaExportBeforeNextFrame
+
 function LuaExportBeforeNextFrame()
+
+	if prevLuaExportBeforeNextFrame then
+        prevLuaExportBeforeNextFrame()
+    end
 	
 	if RELEASE == 1 then
 		RELEASE = 0
@@ -159,9 +164,14 @@ function LuaExportBeforeNextFrame()
 	
 end
 
-
+local prevLuaExportAfterNextFrame = LuaExportAfterNextFrame
 
 function LuaExportAfterNextFrame()
+
+	if prevLuaExportAfterNextFrame then
+        prevLuaExportAfterNextFrame()
+    end
+	
 	POSITION = POSITION + 1
 
 	if(POSITION == DELAY) then
@@ -239,8 +249,14 @@ function LuaExportAfterNextFrame()
 	end
 end
 
+local prevLuaExportStop = LuaExportStop
 
 function LuaExportStop()
+
+	if prevLuaExportStop then
+        prevLuaExportStop()
+    end
+	
    if log_file then
    	log_file:write("Closing log file...")
    	log_file:close()
