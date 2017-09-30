@@ -26,7 +26,7 @@
 ----------------------------------------------------------------------------------
 --Pilot, please edit only these three lines
 ----------------------------------------------------------------------------------
- -- PUT YOUR ANDROID IP(S) HERE, you will find it in the applucation:
+ -- PUT YOUR ANDROID IP(S) in the next line, you will find the Android IP in the app, going in 'settings':
 local clientIP={"192.168.0.10", "192.168.0.14"} 
 --Several Android devices, for only 1 device enter: local clientIP={"192.168.0.10"}
 
