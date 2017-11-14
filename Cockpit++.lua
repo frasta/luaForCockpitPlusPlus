@@ -27,7 +27,7 @@
 --Pilot, please edit only these three lines
 ----------------------------------------------------------------------------------
  -- PUT YOUR ANDROID IP(S) in the next line, you will find the Android IP in the app, going in 'settings':
-local clientIP={"192.168.0.10", "192.168.0.14"} 
+local clientIP={"192.168.0.10", "192.168.0.14", "192.168.0.20"} 
 --Several Android devices, for only 1 device enter: local clientIP={"192.168.0.10"}
 
 
@@ -176,14 +176,15 @@ function LuaExportAfterNextFrame()
 
 	if(POSITION == DELAY) then
 		local selfData = LoGetSelfData()
-		if selfData then
+		if selfData and GetDevice(0) ~= 0  then
+		
 			currentAircraft = selfData["Name"]
-			
+        
 			msgOut = HEAD_MSG..","..version..","..currentAircraft ..","
 
 			if currentAircraft == "M-2000C" then
 				local MainPanel = GetDevice(0)
-
+      
 				pca = MainPanel:get_argument_value(234) ..";".. MainPanel:get_argument_value(463) ..";".. MainPanel:get_argument_value(249) ..";".. MainPanel:get_argument_value(248) ..";".. MainPanel:get_argument_value(236) ..";".. MainPanel:get_argument_value(238) ..";".. MainPanel:get_argument_value(240) ..";".. MainPanel:get_argument_value(242) ..";".. MainPanel:get_argument_value(244) ..";".. MainPanel:get_argument_value(246) ..";".. MainPanel:get_argument_value(247) ..";".. MainPanel:get_argument_value(251) ..";".. MainPanel:get_argument_value(252) ..";".. MainPanel:get_argument_value(254) ..";".. MainPanel:get_argument_value(255) ..";".. MainPanel:get_argument_value(257) ..";".. MainPanel:get_argument_value(258) ..";".. MainPanel:get_argument_value(260) ..";".. MainPanel:get_argument_value(261) ..";".. MainPanel:get_argument_value(263) ..";".. MainPanel:get_argument_value(264)
 
 				ppa = MainPanel:get_argument_value(276) ..";".. MainPanel:get_argument_value(265) ..";".. MainPanel:get_argument_value(277) ..";".. MainPanel:get_argument_value(278) ..";".. MainPanel:get_argument_value(275) ..";".. MainPanel:get_argument_value(267) ..";".. MainPanel:get_argument_value(268) ..";".. MainPanel:get_argument_value(270) ..";".. MainPanel:get_argument_value(271) ..";".. MainPanel:get_argument_value(273) ..";".. MainPanel:get_argument_value(274) ..";".. MainPanel:get_argument_value(280) ..";".. MainPanel:get_argument_value(281)
@@ -224,9 +225,7 @@ function LuaExportAfterNextFrame()
 			
 			if currentAircraft == "UH-1H" then
 				local MainPanel = GetDevice(0)
-
 				armament_panel = MainPanel:get_argument_value(252) ..";".. MainPanel:get_argument_value(253) ..";".. MainPanel:get_argument_value(256) ..";".. MainPanel:get_argument_value(257) ..";".. MainPanel:get_argument_value(258) ..";".. MainPanel:get_argument_value(259) ..";".. MainPanel:get_argument_value(260)
-
 				msgOut = msgOut..armament_panel..",".." \n"
 			end
 			
