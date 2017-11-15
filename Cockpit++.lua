@@ -61,7 +61,7 @@ local ANDROID_PORT = 14800
 ----------------------------------------------------------------------------------
 --Developers, if you know what you are doing, feel free to change things here
 ----------------------------------------------------------------------------------
-local version = 1
+local version = 2
 local log_file = nil
 local lengthIPTable = 0
 local ipUsed = 1
